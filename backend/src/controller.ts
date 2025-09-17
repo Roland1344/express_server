@@ -1,5 +1,7 @@
-import express, { application } from 'express';
-import { getUsers } from './model.js';
+import express from 'express';
+import { createUser, getUsers, modifiedUser, removeUser } from './model.js';
+import type { error } from 'console';
+import { User } from './model';
 
 export const getAll = async (req: express.Request, res: express.Response) => {
     try {
@@ -7,22 +9,36 @@ export const getAll = async (req: express.Request, res: express.Response) => {
         res.status(200)
             .type("application/json")
             .send(data);
-    }catch(error){
-        res.status(500).type("application/json").send({error: "Users request failed."})
+    }catch(error) {
+        res.status(500).type("application/json").send({error: "Users request failed"});
     }
+    
 }
-export const addUser = (req: express.Request, res: express.Response) => {
-    const newUser = req.body;
 
+export const addUser = async (req: express.Request, res: express.Response) => {
+    const newUser = req.body;
     try{
         const user = await createUser(newUser);
-        res.status(201).type("application/json")
+        res.status(201).type("application/json").send(user);
+    } catch (error) {
+        res.status(500).type("application/json").send("Nem sikerült létrehozni az újn felhasználót!");
     }
-
 }
 
 export const deleteUser = async (req: express.Request, res: express.Response) => {
     const id = parseInt(req.params.id!);
-    res.status(200).type("application/json").send({ message: "successful" });
+    const result = await removeUser(id)
 
+    if(result) res.status(200).type("application/json").send({message: "Remove successfully"})
+    else res.status(500).type("application/json").send({error: "Failed to remove"})
+}
+
+export const updateUser = async (req: express.Request, res: express.Response) => {
+    const updateUser = req.body;
+    try{
+        const user = await modifiedUser(updateUser);
+        res.status(201).type("application/json").send(user);
+    }catch(error){
+        res.status(500).type("application/json").send("Nem sikerult modositani az adatait.")
+    }
 }

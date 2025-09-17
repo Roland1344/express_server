@@ -8,6 +8,7 @@
     "@types/cors": "^2.8.19",
     "@types/express": "^5.0.3",
     "@types/mysql": "^2.15.27",
+    "@types/nodemon": "^1.19.6",
     "expess": "^0.0.1-security",
     "express": "^5.1.0",
     "mysql2": "^3.14.5",
